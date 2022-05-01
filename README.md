@@ -4,7 +4,7 @@ This is a minimal docker image runs flask connects to AWS and uses `RDS`/`S3`/`A
 
 ## ARCHITECTURE
 
-This architecture is designed to provide a handy way to deploy an app, you can completely remove docker based backend server and replace by a serverless method instead. 
+This architecture is designed to provide a handy way to deploy an app, you can completely remove docker based backend server and replace by a serverless method. 
 
 - ![](./images/arch.drawio.png)
 
