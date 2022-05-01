@@ -1,6 +1,5 @@
 .gitignore
 .prettierrc
 .env
-.env.example
 
 

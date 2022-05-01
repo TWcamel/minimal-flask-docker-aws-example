@@ -54,13 +54,7 @@ export let ImageUpload = {
             await fetch('/api/aws/image', {
                 method: 'POST',
                 body: formData,
-            })
-                .then((res) => {
-                    return res.json();
-                })
-                .then((data) => {
-                    console.log(data);
-                });
+            });
         };
         reader.readAsDataURL(file);
     },
