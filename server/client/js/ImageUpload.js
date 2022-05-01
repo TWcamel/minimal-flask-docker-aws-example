@@ -1,63 +1,98 @@
 export let ImageUpload = {
     init: () => {
+        ImageUpload.getImages();
         let input = document.getElementById('image-upload');
+        // ENHENCE: description should be a uuid
+        let desc = '';
+        document.getElementById('img-text').addEventListener('keyup', () => {
+            desc = document.querySelector('#img-text').value;
+        });
         input.addEventListener('change', (event) => {
-            let file = event.target.files[0];
-            ImageUpload.generatePreview(file);
+            if (event.target?.files !== undefined) {
+                let file = event.target.files[0];
+                const fileDesc = desc;
+                ImageUpload.generatePreview(file, fileDesc);
+                ImageUpload.upload(file, fileDesc);
+            } else {
+                alert('No file selected');
+            }
         });
     },
-    generatePreview: (file) => {
+    generatePreview: (file, fileDesc) => {
         let reader = new FileReader();
         reader.onloadend = () => {
-            let img = document.createElement('img');
-            img.style.width = '17rem';
-            img.style.height = '15rem';
-            img.src = reader.result;
-            document.querySelector('#image-preview').appendChild(img);
+            ImageUpload.imageAppendToPreview(reader.result, fileDesc);
         };
         reader.readAsDataURL(file);
     },
     getImageList: async () => {
-        // TODO: GET list of images from S3
         return await new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest();
-            xhr.open('GET', 'https://s3.amazonaws.com/image-upload-bucket/');
+            xhr.open('GET', '/api/aws/images');
             xhr.onload = () => {
                 resolve(xhr.response);
             };
             xhr.send();
         });
     },
-    getImage: async () => {
-        // TODO: GET image from S3
+    getImages: async () => {
         let images = await ImageUpload.getImageList();
-        images.forEach((url) => {
-            const image = ImageUpload.download(url);
-            ImageUpload.generatePreview(image);
+        images = await JSON.parse(images).data;
+        images.forEach(async (image) => {
+            const url = await image.image_url;
+            const _image = await ImageUpload.download(url);
+            ImageUpload.imageAppendToPreview(_image, image.description);
         });
-        return image;
     },
-    upload: async () => {
-        // TODO: POST image to S3
-        return await new Promise((resolve, reject) => {
-            let file = document.querySelector('#image-upload').files[0];
-            let reader = new FileReader();
-            reader.onloadend = () => {
-                resolve(reader.result);
-            };
-            reader.readAsDataURL(file);
-        });
+    upload: async (file, desc) => {
+        let reader = new FileReader();
+        reader.onloadend = async () => {
+            let formData = new FormData();
+            formData.append('image', reader.result);
+            formData.append('description', desc);
+            formData.append('image_name', file.name);
+            await fetch('/api/aws/image', {
+                method: 'POST',
+                body: formData,
+            })
+                .then((res) => {
+                    return res.json();
+                })
+                .then((data) => {
+                    console.log(data);
+                });
+        };
+        reader.readAsDataURL(file);
     },
     download: async (url) => {
-        // TODO: GET image from S3
-        return await new Promise((resolve, reject) => {
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET', url);
-            xhr.responseType = 'blob';
-            xhr.onload = () => {
-                resolve(xhr.response);
-            };
-            xhr.send();
-        });
+        return await fetch(url, {
+            cache: 'no-cache',
+        })
+            .then((response) => {
+                return response.text();
+            })
+            .then((data) => {
+                return data;
+            });
+    },
+    dataUriToImage: (dataUri) => {
+        let image = new Image();
+        image.src = dataUri;
+        document.querySelector('#image-preview').appendChild(image);
+        return image;
+    },
+    imageAppendToPreview: (image, desc) => {
+        let img = document.createElement('img');
+        let imgDesc = document.createElement('img-desc');
+        const br = document.createElement('br');
+        const hr = document.createElement('hr');
+        img.style.width = '17rem';
+        img.style.height = '15rem';
+        img.src = image;
+        imgDesc.innerHTML += `照片描述: ${desc}`;
+        document.querySelector('#image-preview').appendChild(imgDesc);
+        document.querySelector('#image-preview').appendChild(br);
+        document.querySelector('#image-preview').appendChild(img);
+        document.querySelector('#image-preview').appendChild(hr);
     },
 };

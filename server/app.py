@@ -2,7 +2,7 @@ from flask import *
 import configparser
 from time import time
 from api.home import home
-from api.s3 import s3
+from api.aws import aws
 
 app = Flask(__name__, static_folder="./client", static_url_path="/")
 
@@ -12,7 +12,7 @@ app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 app.register_blueprint(home)
-app.register_blueprint(s3)
+app.register_blueprint(aws)
 
 
 if __name__ == "__main__":
