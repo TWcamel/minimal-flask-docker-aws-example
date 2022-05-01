@@ -2,20 +2,25 @@ export let ImageUpload = {
     init: () => {
         ImageUpload.getImages();
         let input = document.getElementById('image-upload');
-        // ENHENCE: description should be a uuid
+        // ENHENCE: image name should be an uuid
         let desc = '';
         document.getElementById('img-text').addEventListener('keyup', () => {
             desc = document.querySelector('#img-text').value;
         });
-        input.addEventListener('change', (event) => {
-            if (event.target?.files !== undefined) {
-                let file = event.target.files[0];
+        input.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const _files = input.querySelector('input[type=file]');
+            if (
+                _files?.files !== undefined &&
+                _files?.files?.length > 0 &&
+                event.defaultPrevented
+            ) {
+                let file = _files.files[0];
                 const fileDesc = desc;
                 ImageUpload.generatePreview(file, fileDesc);
                 ImageUpload.upload(file, fileDesc);
-            } else {
-                alert('No file selected');
-            }
+            } else alert('No file selected');
         });
     },
     generatePreview: (file, fileDesc) => {
@@ -54,7 +59,18 @@ export let ImageUpload = {
             await fetch('/api/aws/image', {
                 method: 'POST',
                 body: formData,
-            });
+            })
+                .then((res) => {
+                    return res.json();
+                })
+                .then((data) => {
+                    return data;
+                })
+                .then((data) => {
+                    if (data.ok) {
+                        alert('Image uploaded successfully');
+                    }
+                });
         };
         reader.readAsDataURL(file);
     },
