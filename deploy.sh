@@ -1,8 +1,8 @@
 #!/bin/bash
 . ./.env
 sudo docker build -t $IMAGE_NAME .
-sudo docker 2>/dev/null ps -q --filter ancestor=$IMAGE_NAME | xargs sudo docker stop | true 
-sudo docker 2>/dev/null ps -q --filter ancestor=$IMAGE_NAME | xargs sudo docker rm | true
+sudo docker 2>/dev/null stop $CONTAINER_NAME | true 
+sudo docker 2>/dev/null rm $CONTAINER_NAME | true
 sudo docker run -d -p $PORT:$PORT --name $CONTAINER_NAME $IMAGE_NAME
 sudo docker 2>/dev/null cp ./.env $CONTAINER_NAME:/app/server/.env | true
 echo ".env file copied to container $CONTAINER_NAME on port $PORT"
