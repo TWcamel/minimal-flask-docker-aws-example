@@ -39,7 +39,7 @@ $ ./deploy.sh
 
 ## PROFILER
 
-I uses two method: API Gateway alongside and Cloudfront + API Gateway to request for images which are stored in S3 service. Below images compare two methods and can find: CDN response images to requests more effitively.
+I use two method: API Gateway alongside and Cloudfront + API Gateway to request for images which are stored in S3 service. Below images compare two methods and can find: CDN response images to requests more effitively.
 
 ![picture 3](images/9e29665382184bc2220ec371fa2e1b29286c6d1ff7bb9e5089a8a438879ccc1d.png)  
 ![picture 1](images/470e9a6e52b9590d3a159580833ee2c726372a1954fc90718a34c7cb89b3deaf.png)  
