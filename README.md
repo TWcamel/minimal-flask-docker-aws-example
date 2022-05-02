@@ -4,11 +4,11 @@ This is a minimal docker image runs flask connects to AWS and uses `RDS`/`S3`/`A
 
 ## ARCHITECTURE
 
-This architecture is designed to provide a handy way to deploy an app, you can completely remove docker based backend server and replace by a serverless method.
+This architecture is designed to provide a handy way to deploy an app, you can completely remove docker based back-end server and replace by a serverless method.
 
--   ![](./images/arch.drawio.png)
+![](./images/arch.drawio.png)
 
-## DEPENDENCIE
+## DEPENDENCIES
 
 1. An AWS Free-tier account
 2. Knowledge of [S3/RDS/CloudFront/API Gateway](#useful-links)
@@ -39,7 +39,7 @@ $ ./deploy.sh
 
 ## PROFILER
 
-I use two method: API Gateway alongside and Cloudfront + API Gateway to request for images which are stored in S3 service. Below compare two methods, you can see: CDN response images to requests more effitively.
+I use two method: API Gateway/ Cloudfront + API Gateway to request for images which are stored in S3-bucket. Below compare two methods, as you can see: CDN responses more efficiently.
 
 ![picture 3](images/9e29665382184bc2220ec371fa2e1b29286c6d1ff7bb9e5089a8a438879ccc1d.png)  
 ![picture 1](images/470e9a6e52b9590d3a159580833ee2c726372a1954fc90718a34c7cb89b3deaf.png)  
